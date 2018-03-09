@@ -14,6 +14,17 @@ app.use(bodyParser.urlencoded({extended: true}))
 /* on associe le moteur de vue au module «ejs» */
 app.use(express.static('public'));
 
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
+
+const i18n = require('i18n');
+i18n.configure({ 
+   locales : ['fr', 'en'],
+   cookie : 'langueChoisie', 
+   directory : __dirname + '/locales' 
+})
+app.use(i18n.init)
+
 let db // variable qui contiendra le lien sur la BD
 
 MongoClient.connect('mongodb://127.0.0.1:27017', (err, database) => {
@@ -157,5 +168,13 @@ app.get('/vider', (req, res) => {
 app.get('/chat', (req, res) => {
 	res.render('socket_vue.ejs')
 })
+
+//////////////////////////////////////////////////////////	Changer la langue
+app.get('/:locale(en|fr)',  (req, res) => {
+	res.cookie('langueChoisie' , req.params.locale);
+	res.setLocale(req.params.locale)
+	res.redirect(req.get('referer'))
+})
+
 
 
