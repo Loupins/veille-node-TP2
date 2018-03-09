@@ -65,9 +65,15 @@ function enregistrement(){
 function envoyerMesssage(){
 	var elmMessage = document.querySelector('#message_a_transmettre input')
 	console.log(elmMessage.value)
+	var timeNow = new Date();
+	var hours   = timeNow.getHours();
+  	var minutes = timeNow.getMinutes();
+  	var timeString = "" + ((hours > 12) ? hours - 12 : hours);
+  	timeString  += ((minutes < 10) ? ":0" : ":") + minutes;
+  	timeString  += (hours >= 12) ? " P.M." : " A.M.";
 	 /* l'événement « setUser » est transmit avec un objet 
 	 */
-	socket.emit('sendMessage', {nom: username, message : elmMessage.value})
+	socket.emit('sendMessage', {nom: username, message : elmMessage.value, heure : timeString})
 }
 
 function afficherTableauUtilisateurs(data) {
@@ -84,7 +90,7 @@ function afficherMessage(data, moi) {
 	if(!moi) {
 		sChaine += '<tr><td>' + data['nom'] + ' : </td><td>' + data['message'] + '</td><td>00:00</td></tr>';
 	} else {
-		sChaine += '<tr style="background: grey;"><td>Moi : </td><td>' + data['message'] + '</td><td>00:00</td></tr>';
+		sChaine += '<tr style="background: grey;"><td>Moi : </td><td>' + data['message'] + '</td><td>'+data['heure']+'</td></tr>';
 	}
 	
 	let elmListMessage = document.getElementById('message');
