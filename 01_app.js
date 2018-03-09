@@ -11,6 +11,7 @@ const bodyParser= require('body-parser')
 const MongoClient = require('mongodb').MongoClient // le pilote MongoDB
 const ObjectID = require('mongodb').ObjectID;
 app.use(bodyParser.urlencoded({extended: true}))
+app.use(bodyParser.json())
 /* on associe le moteur de vue au module «ejs» */
 app.use(express.static('public'));
 
@@ -175,6 +176,44 @@ app.get('/:locale(en|fr)',  (req, res) => {
 	res.setLocale(req.params.locale)
 	res.redirect(req.get('referer'))
 })
+
+////////////////////////////////////////////////////////	AJAX
+
+// Dans notre application serveur
+// Une nouvelle route pour traiter la requête AJAX
+
+app.post('/ajax_modifier', (req,res) => {
+  req.body._id = ObjectID(req.body._id)
+  console.log("req.body._id = " + req.body._id)
+
+  db.collection('adresse').save(req.body, (err, result) => {
+    if (err) return console.log(err)
+    console.log('sauvegarder dans la BD')
+    res.send(JSON.stringify(req.body));
+    // res.status(204)
+  })
+})
+
+
+app.post('/ajax_detruire', (req,res) => {
+  db.collection('adresse').findOneAndDelete({"_id": ObjectID(req.body._id)}, (err, resultat) => {
+  	console.log(util.inspect(req.body))
+  if (err) return console.log(err)
+    res.send(JSON.stringify(req.body))  // redirige vers la route qui affiche la collection
+  })
+})
+
+app.post('/ajax_ajouter', (req, res) => {
+  console.log('route /ajax_ajouter') 
+  db.collection('adresse').save(req.body, (err, result) => {
+    if (err) return console.log(err)
+    // console.log(req.body) 
+    console.log('sauvegarder dans la BD')
+    res.send(JSON.stringify(req.body))
+  })
+})
+
+
 
 
 
