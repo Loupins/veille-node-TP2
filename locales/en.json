@@ -5,5 +5,7 @@
 	"Nom": "Last name",
 	"Prenom": "First name",
 	"Téléphone": "Phone",
-	"Courriel": "Email"
+	"Courriel": "Email",
+	"Clavardage": "Chat",
+	"Peupler": "People"
 }
