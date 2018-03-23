@@ -165,6 +165,15 @@ app.get('/vider', (req, res) => {
 	res.redirect('/adresse')
 })
 
+app.get('/profil/:id', (req, res) => {
+  var identifiant = ObjectID(req.params.id);
+  db.collection('adresse').findOne({"_id":identifiant}, function(err, resultat) {
+      if (err) throw err;
+      console.log(resultat);
+      res.render('composants/profil.ejs', {profil: resultat})
+  });
+})
+
 
 app.get('/chat', (req, res) => {
 	res.render('socket_vue.ejs')
